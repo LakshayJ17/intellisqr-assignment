@@ -9,12 +9,16 @@ import crypto from "crypto"
 const registerUser = asyncHandler(async (req: AuthRequest, res: Response) => {
     // take user input -> validate -> check if user already exists -> store user in db -> Fetch user w/o password , generate token -> return user and token
 
-    const { fullname, email, password } = req.body
+    const { email, password } = req.body
 
-    if ([fullname, email, password].some((field) => field?.trim() === "")) {
+    if ([ email, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
 
+    if (!(password.length > 6 && password.length < 20)){
+        throw new ApiError(400, "Password must be between length 6 and 20")
+    }
+    
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
@@ -22,7 +26,6 @@ const registerUser = asyncHandler(async (req: AuthRequest, res: Response) => {
     }
 
     const user = await User.create({
-        fullname,
         email,
         password,
     })
@@ -82,7 +85,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     // Store hashed token into db and send raw token in response 
     // User clicks link and writes new password and raw token is also sent back
     // BE hash token and validated and updates password 
-    
+
     const { email } = req.body
 
     if (!email) {
@@ -108,6 +111,5 @@ const forgotPassword = asyncHandler(async (req, res) => {
         new ApiResponse(200, { resetToken }, "Password reset token generated")
     );
 })
-
 
 export { registerUser, loginUser, forgotPassword }

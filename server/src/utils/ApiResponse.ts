@@ -12,4 +12,4 @@ class ApiResponse<T = Record<string, unknown>> {
     }
 }
 
-export {ApiResponse}
+export { ApiResponse }

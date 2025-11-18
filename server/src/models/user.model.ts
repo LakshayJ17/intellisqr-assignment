@@ -5,12 +5,6 @@ import * as jwt from "jsonwebtoken";
 import { config } from "../config/config";
 
 const userSchema = new mongoose.Schema<IUser>({
-    fullname: {
-        type: String,
-        required: true,
-        trim: true,
-        index: true
-    },
     email: {
         type: String,
         required: true,
@@ -48,7 +42,6 @@ userSchema.methods.generateAccessToken = function () {
         {
             _id: this._id,
             email: this.email,
-            fullname: this.fullname
         },
         config.accesstokensecret as jwt.Secret,
         { expiresIn: config.accesstokenexpiry } as jwt.SignOptions
