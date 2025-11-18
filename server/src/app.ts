@@ -11,8 +11,11 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }))
 // Routes 
 import userRouter from "./routes/user.routes"
 import todoRouter from "./routes/todo.routes"
+import { errorMiddleware } from "./middleware/error.middleware"
 
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/todos", todoRouter)
+
+app.use(errorMiddleware);
 
 export { app }

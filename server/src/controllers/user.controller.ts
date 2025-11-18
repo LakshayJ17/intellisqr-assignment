@@ -11,14 +11,14 @@ const registerUser = asyncHandler(async (req: AuthRequest, res: Response) => {
 
     const { email, password } = req.body
 
-    if ([ email, password].some((field) => field?.trim() === "")) {
+    if ([email, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
 
-    if (!(password.length > 6 && password.length < 20)){
+    if (!(password.length > 6 && password.length < 20)) {
         throw new ApiError(400, "Password must be between length 6 and 20")
     }
-    
+
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
@@ -43,25 +43,22 @@ const registerUser = asyncHandler(async (req: AuthRequest, res: Response) => {
 })
 
 const loginUser = asyncHandler(async (req: AuthRequest, res: Response) => {
-    // get user details -> validate -> match password -> generate tokens -> send response
-
     const { email, password } = req.body
 
     if (!password || !email) {
-        throw new ApiError(400, "email and password is required")
+        throw new ApiError(400, "Email and password are required")
     }
 
-    const user = await User.findOne({
-        email
-    })
+    const user = await User.findOne({ email })
 
     if (!user) {
         throw new ApiError(404, "User not found")
     }
-    const isPasswordValid = await user?.isPasswordCorrect(password)
+
+    const isPasswordValid = await user.isPasswordCorrect(password)
 
     if (!isPasswordValid) {
-        throw new ApiError(401, "Credentials are not correct")
+        throw new ApiError(401, "Invalid credentials")
     }
 
     const token = user.generateAccessToken()
@@ -72,8 +69,8 @@ const loginUser = asyncHandler(async (req: AuthRequest, res: Response) => {
         throw new ApiError(500, "Something went wrong while fetching user")
     }
 
-
-    return res.status(200)
+    return res
+        .status(200)
         .json(new ApiResponse(200, { loggedInUser, token }, "User logged in successfully"))
 })
 

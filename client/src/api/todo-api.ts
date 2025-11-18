@@ -16,7 +16,7 @@ async function getAllTodos() {
     })
     const output = await res.json()
     if (!res.ok) {
-        throw new Error(output?.message || "Failed to delete todo");
+        throw new Error(output?.message || "Failed to fetch todos");
     }
 
     return output.data
@@ -63,7 +63,7 @@ async function updateTodo({ title, id }: { title: string; id: string }) {
     }
 
     const res = await fetch(`${BASE_URL}/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
@@ -74,7 +74,7 @@ async function updateTodo({ title, id }: { title: string; id: string }) {
     const output = await res.json()
 
     if (!res.ok) {
-        throw new Error(output?.message || "Failed to add todo");
+        throw new Error(output?.message || "Failed to update todo");
     }
 
     return output.data
@@ -98,7 +98,7 @@ async function deleteTodo({ id }: { id: string }) {
     const output = await res.json()
 
     if (!res.ok) {
-        throw new Error(output?.message || "Failed to add todo");
+        throw new Error(output?.message || "Failed to delete todo");
     }
 
     return output.data
